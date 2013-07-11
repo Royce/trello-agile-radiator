@@ -1,0 +1,25 @@
+Card = require("../lib/card")
+
+module.exports =
+	'there is a card': ->
+		new Card({})
+
+	'knows about name': ->
+		c = new Card
+			name: 'name' 
+		c.name().should.eql 'name'
+
+	'pulls prefix from name': ->
+		c = new Card {name: 'prefix: the name'}
+		c.prefix().should.eql 'prefix'
+		c.name().should.eql 'the name'
+
+	'pulls size from end of name': ->
+		c = new Card {name: 'the name (3)'}
+		c.size().should.eql '3'
+		c.name().should.eql 'the name'
+
+	'pulls size from start of name': ->
+		c = new Card {name: '(Tr) the name'}
+		c.size().should.eql 'Tr'
+		c.name().should.eql 'the name'
