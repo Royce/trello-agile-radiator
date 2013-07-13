@@ -23,3 +23,18 @@ module.exports =
 		c = new Card {name: '(Tr) the name'}
 		c.size().should.eql 'Tr'
 		c.name().should.eql 'the name'
+
+	'flattens labels': ->
+		c = new Card
+		   labels: [
+		      color: 'red'
+		      name: 'One'
+		    ,
+		      color: 'blue'
+		      name: 'Two' 
+		    ]
+		c.labels()
+		.should.be.an.instanceOf(Array)
+		.and.have.length(2)
+		.and.include('One')
+		.and.include('Two')

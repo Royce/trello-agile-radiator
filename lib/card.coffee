@@ -1,3 +1,5 @@
+_ = require "underscore"
+
 class Card
 	constructor: (@data, options) ->
 		@text_split =
@@ -7,6 +9,8 @@ class Card
 			name: 3
 			size_end: 4
 		@name_parts = @data?.name?.match(@text_split.regex)
+		@_labels = _.map @data?.labels, (label) ->
+			label.name
 
 	name: () ->
 		@name_parts[@text_split.name] or @data?.name
@@ -17,5 +21,7 @@ class Card
 	size: () ->
 		@name_parts[@text_split.size_start] or
 		@name_parts[@text_split.size_end]
+
+	labels: () -> @_labels
 
 module.exports = Card
