@@ -26,15 +26,39 @@ module.exports =
 
 	'flattens labels': ->
 		c = new Card
-		   labels: [
-		      color: 'red'
-		      name: 'One'
-		    ,
-		      color: 'blue'
-		      name: 'Two' 
-		    ]
+			labels: [
+				color: 'red'
+				name: 'One'
+			,
+				color: 'blue'
+				name: 'Two' 
+			]
 		c.labels()
 		.should.be.an.instanceOf(Array)
 		.and.have.length(2)
 		.and.include('One')
 		.and.include('Two')
+
+	'flattens and extracts size from checklist': ->
+		c = new Card
+			checklists: [
+				name: 'Dev. tasks'
+				checkItems: [
+					state: 'incomplete'
+					name: '(2h) dev one'
+				,
+					state: 'complete'
+					name: '(2h) dev one'
+				]
+			,
+				name: 'Acceptance Criteria'
+				checkItems: [
+					state: 'incomplete'
+					name: 'Test the thing'
+				]
+			]
+		c.remainingTasks()
+		.should.be.an.instanceOf(Array)
+		.and.have.length(2)
+		#.and.include('One')
+		#.and.include('Two')
