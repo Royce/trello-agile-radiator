@@ -1,4 +1,4 @@
-# Todo: give this a title
+# Tragellator - Trello Agile (Information) Radiator
 
 ## Current status
 
