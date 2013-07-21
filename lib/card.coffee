@@ -1,7 +1,7 @@
 _ = require "underscore"
 
 class Card
-	constructor: (@data, options) ->
+	constructor: (@data, @options) ->
 		@text_split = text_split =
 			regex: /^(?:\((.+?)\)\s+)?(?:(.+)\:\s)?(.*?)(?:\s+\((.+?)\))?$/
 			size_start: 1
@@ -40,5 +40,12 @@ class Card
 	labels: () -> @_labels
 
 	remainingTasks: () -> @_tasks
+
+	listName: () ->
+		if @options?.listLookup
+			@options.listLookup[@data.idList]
+		else
+		  throw 'Need a list lookup to find the list name'
+
 
 module.exports = Card

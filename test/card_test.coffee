@@ -62,3 +62,13 @@ module.exports =
 		.and.have.length(2)
 		#.and.include('One')
 		#.and.include('Two')
+
+	'translate list ids': ->
+		data =
+			idList: 'f76'
+		config =
+			listLookup:
+				f76: 'To Do'
+		
+		c = new Card data, config
+		c.listName().should.eql('To Do')
