@@ -4,7 +4,13 @@
 
 I'm in the middle of porting fetch.js to coffeescript classes and having tests.
 
-- [ ] Finish this work.
+- [x] Finish this work.
+- [ ] Test this works.
+
+Then:
+
+- [ ] write code to save the data somewhere.
+- [ ] write code to figure out what the data means
 
 ## Running test.
 
