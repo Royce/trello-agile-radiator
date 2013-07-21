@@ -1,5 +1,8 @@
+_ = require "underscore"
 Trello = require "node-trello"
 asyncblock = require "asyncblock"
+
+Card = require "card"
 
 class Fetcher
   constructor: (key, token) ->
@@ -10,30 +13,33 @@ class Fetcher
   fetch: (board) ->
     cards = {}
     asyncblock (flow) ->
-      listLookup = flow.future()
-      getListLookup board, listLookup
+      listLookupFuture = flow.future()
+      getListLookup board, listLookupFuture
 
       cardsFuture = flow.future()
-      getCards @trello, board, cardsFuture
+      getCards board, cardsFuture
 
-      cards = cardsFuture.result
-      flattenLabels cards
-      disectName cards
-      disectChecklists cards
-      translateListIds cards, listLookup.result
-    });
+      cards =
+      _(cardsFuture.result)
+      .map (card) ->
+        new Card(card, { listLookup: listLookup.result })
+    cards
 
   getListLookup: (board, future) ->
-    @trello.get '/1/board/#{board}/lists', { fields: 'name' }, (err, data) ->
-      future(err, data) if err
+    @trello.get '/1/board/#{board}/lists',
+      fields: 'name'
+      (err, data) ->
+        return future(err, data) if err
 
-      lookup = {}
-      lookup[item.id] = item.name for item in data
+        lookup = {}
+        lookup[item.id] = item.name for item in data
 
-      future(err, lookup)
+        future(err, lookup)
 
   getCards: (board, future) ->
-    details = { fields: 'name,idList,labels', checklists: 'all' }
-    @trello.get('/1/board/#{board}/cards', details, future)
+    @trello.get '/1/board/#{board}/cards',
+      fields: 'name,idList,labels'
+      checklists: 'all'
+      , future
 
 module.exports = Fetcher
