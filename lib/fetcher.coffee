@@ -2,31 +2,31 @@ _ = require "underscore"
 Trello = require "node-trello"
 asyncblock = require "asyncblock"
 
-Card = require "card"
+Card = require "./card"
 
 class Fetcher
   constructor: (key, token) ->
     @trello = new Trello(key, token)
 
-  # Make a GET request to Trello.
-  # Syntax: trello.get(uri, [query], callback)
   fetch: (board) ->
     cards = {}
-    asyncblock (flow) ->
+    asyncblock (flow) =>
       listLookupFuture = flow.future()
-      getListLookup board, listLookupFuture
+      @getListLookup board, listLookupFuture
 
       cardsFuture = flow.future()
-      getCards board, cardsFuture
+      @getCards board, cardsFuture
 
       cards =
       _(cardsFuture.result)
       .map (card) ->
-        new Card(card, { listLookup: listLookup.result })
+        new Card(card, { listLookup: listLookupFuture.result })
+
+      flow.wait()
     cards
 
   getListLookup: (board, future) ->
-    @trello.get '/1/board/#{board}/lists',
+    @trello.get '/1/boards/#{board}/lists',
       fields: 'name'
       (err, data) ->
         return future(err, data) if err
@@ -37,7 +37,7 @@ class Fetcher
         future(err, lookup)
 
   getCards: (board, future) ->
-    @trello.get '/1/board/#{board}/cards',
+    @trello.get '/1/boards/#{board}/cards',
       fields: 'name,idList,labels'
       checklists: 'all'
       , future
